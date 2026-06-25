@@ -12,7 +12,7 @@ function Login() {
   const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(()=>{
-    fetch('http://localhost:2000/login', {
+    fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -72,7 +72,7 @@ function Login() {
         setErrors(rest);
       }
 
-      fetch('http://localhost:2000/login', {
+      fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

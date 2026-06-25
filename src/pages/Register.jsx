@@ -49,7 +49,7 @@ function Register() {
         setErrors(rest);
       }
 
-      fetch('http://localhost:2000/register', {
+      fetch(`${import.meta.env.VITE_API_URL}/register`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

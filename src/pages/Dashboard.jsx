@@ -88,7 +88,7 @@ function Dashboard() {
   const fetchFolderContents = async (folderId) => {
     if (!folderId || !token) return;
     try {
-      const res = await fetch(`http://localhost:2000/allFolders?folderId=${folderId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/allFolders?folderId=${folderId}`, {
         method: "GET",
         headers: {
           'authorization': token
@@ -135,7 +135,7 @@ function Dashboard() {
   const fetchTrash = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`http://localhost:2000/trash`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/trash`, {
         method: "GET",
         headers: { 'authorization': token }
       });
@@ -155,7 +155,7 @@ function Dashboard() {
   const fetchRecentFiles = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`http://localhost:2000/recentFiles`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/recentFiles`, {
         method: "GET",
         headers: { 'authorization': token }
       });
@@ -263,7 +263,7 @@ function Dashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:2000/logout', {
+      await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
         method: 'PUT',
         credentials: 'include'
       });
@@ -287,7 +287,7 @@ function Dashboard() {
     }
 
     try {
-      const res = await fetch(`http://localhost:2000/createFolder`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/createFolder`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -352,7 +352,7 @@ function Dashboard() {
     formData.append('parentFolderId', currentFolderId);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:2000/uploadFile', true);
+    xhr.open('POST', `${import.meta.env.VITE_API_URL}/uploadFile`, true);
     xhr.setRequestHeader('authorization', token);
 
     // Track upload progress
@@ -420,7 +420,7 @@ function Dashboard() {
 
     setIsGeneratingShareLink(true);
     try {
-      const res = await fetch(`http://localhost:2000/shareFile`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/shareFile`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -466,7 +466,7 @@ function Dashboard() {
         ? { folderId: selectedItem.id, newName: newName.trim() }
         : { fileId: selectedItem.id, newName: newName.trim() };
 
-      const res = await fetch(`http://localhost:2000/${endpoint}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json',
@@ -498,7 +498,7 @@ function Dashboard() {
       const endpoint = type === 'folder' ? 'deleteFolder' : 'deleteFile';
       const payload = type === 'folder' ? { folderId: id } : { fileId: id };
 
-      const res = await fetch(`http://localhost:2000/${endpoint}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json',
@@ -519,7 +519,7 @@ function Dashboard() {
 
   // Handle download of file
   const handleDownloadFile = (fileId) => {
-    window.open(`http://localhost:2000/downloadFile/${fileId}?token=${token}`);
+    window.open(`${import.meta.env.VITE_API_URL}/downloadFile/${fileId}?token=${token}`);
   };
 
   const handleViewFile = (file) => {
@@ -528,7 +528,7 @@ function Dashboard() {
 
   const renderPreviewContent = (file) => {
     const ext = file.fileName.split('.').pop().toLowerCase();
-    const fileUrl = `http://localhost:2000/viewFile/${file._id}?token=${token}`;
+    const fileUrl = `${import.meta.env.VITE_API_URL}/viewFile/${file._id}?token=${token}`;
     
     if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'].includes(ext)) {
       return <img src={fileUrl} alt={file.fileName} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />;
@@ -563,7 +563,7 @@ function Dashboard() {
   // Restore trash items
   const handleRestore = async (id, type) => {
     try {
-      const res = await fetch(`http://localhost:2000/restoreItem`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/restoreItem`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json',
@@ -585,7 +585,7 @@ function Dashboard() {
   const handlePermanentDelete = async (id, type) => {
     if (!window.confirm("Are you sure you want to permanently delete this item? This action is irreversible and will physically delete files from the disk.")) return;
     try {
-      const res = await fetch(`http://localhost:2000/permanentDeleteItem`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/permanentDeleteItem`, {
         method: "DELETE",
         headers: {
           'Content-Type': 'application/json',
