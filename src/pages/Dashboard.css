@@ -1848,3 +1848,487 @@ html.dark .db-file-row-share-panel {
   }
 }
 
+/* ==========================================================================
+   Mobile-First Responsive Enhancements
+   ========================================================================== */
+
+/* Toggleable Mobile Search icon in header right (desktop hidden) */
+.db-mobile-search-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .db-mobile-search-toggle {
+    display: flex;
+  }
+  
+  .db-desktop-only-btn {
+    display: none !important;
+  }
+  
+  .db-sidebar {
+    display: none !important;
+  }
+  
+  /* Add padding bottom to db-content-area to accommodate bottom navigation bar */
+  .db-content-area {
+    padding-bottom: 72px;
+  }
+  
+  /* Make selection buttons in toolbar compact on mobile */
+  .db-toolbar-left {
+    gap: 8px !important;
+    width: 100%;
+  }
+
+  .db-toolbar-left .db-btn-secondary {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  /* Hide the text label on mobile, leaving just the icon */
+  .db-toolbar-left .db-btn-secondary span {
+    display: none;
+  }
+}
+
+/* Mobile Search Overlay container */
+.db-mobile-search-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 150;
+  animation: drawerBackdropFadeIn 0.15s ease-out;
+}
+
+.db-mobile-search-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 12px;
+  height: 44px;
+}
+
+.db-mobile-search-input {
+  border: none;
+  background: transparent;
+  flex: 1;
+  height: 100%;
+  font-size: 15px;
+  color: var(--text-h);
+  outline: none;
+}
+
+.db-mobile-search-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile Bottom Navigation Bar */
+.db-mobile-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .db-mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 990;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
+  }
+
+  html.dark .db-mobile-nav {
+    background: rgba(22, 23, 29, 0.85);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+.db-mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 500;
+  gap: 4px;
+  cursor: pointer;
+  width: 70px;
+  height: 100%;
+  transition: color 0.2s ease;
+}
+
+.db-mobile-nav-item svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform 0.2s;
+}
+
+.db-mobile-nav-item.active {
+  color: var(--accent);
+}
+
+.db-mobile-nav-item.active svg {
+  stroke: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* Mobile Floating Action Button (FAB) */
+.db-mobile-fab-container {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .db-mobile-fab-container {
+    display: block;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 980;
+  }
+}
+
+.db-mobile-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--accent) 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(170, 59, 255, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s;
+}
+
+.db-mobile-fab svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  transition: transform 0.25s ease;
+}
+
+.db-mobile-fab.open {
+  transform: rotate(135deg);
+  box-shadow: 0 4px 12px rgba(170, 59, 255, 0.2);
+}
+
+.db-fab-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 981;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.db-fab-menu {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  z-index: 982;
+  animation: fabMenuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+html.dark .db-fab-menu {
+  background: rgba(22, 23, 29, 0.9);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+@keyframes fabMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.db-fab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.db-fab-menu-item:hover {
+  background: rgba(170, 59, 255, 0.08);
+  color: var(--accent);
+}
+
+.db-fab-menu-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text);
+  transition: color 0.2s;
+  fill: none;
+}
+
+.db-fab-menu-item:hover svg {
+  color: var(--accent);
+}
+
+/* Mobile More Button for File rows and Folder cards */
+.db-mobile-more-btn {
+  display: none;
+}
+
+.db-folder-more-btn-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .db-mobile-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+
+  .db-mobile-more-btn:hover {
+    background: var(--code-bg);
+    color: var(--text-h);
+  }
+
+  .db-folder-more-btn-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+  
+  .db-folder-more-btn-mobile:hover {
+    background: var(--code-bg);
+    color: var(--text-h);
+  }
+  
+  /* Hide hover desktop actions on mobile */
+  .db-file-actions,
+  .db-folder-actions {
+    display: none !important;
+  }
+}
+
+/* Mobile Bottom Action Sheet */
+.db-mobile-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1005;
+  animation: drawerBackdropFadeIn 0.2s ease-out;
+}
+
+.db-mobile-menu-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
+  z-index: 1006;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-sizing: border-box;
+}
+
+html.dark .db-mobile-menu-sheet {
+  background: rgba(22, 23, 29, 0.95);
+  border-top-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.db-mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+html.dark .db-mobile-menu-header {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.db-mobile-menu-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.db-mobile-menu-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.db-mobile-menu-folder-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.db-mobile-menu-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--text);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.db-mobile-menu-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.db-mobile-menu-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.db-mobile-menu-action:hover {
+  background: rgba(170, 59, 255, 0.08);
+}
+
+.db-mobile-menu-action svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.db-mobile-menu-action:hover svg {
+  color: var(--accent);
+}
+
+/* Mobile-only storage spacer display */
+.db-mobile-only-storage {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .db-mobile-only-storage {
+    display: flex;
+  }
+}
+
+

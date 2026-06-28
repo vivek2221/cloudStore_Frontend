@@ -42,6 +42,9 @@ function Dashboard() {
   const [shareUrl, setShareUrl] = useState('');
   const [isGeneratingShareLink, setIsGeneratingShareLink] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [activeMobileMenu, setActiveMobileMenu] = useState(null);
+  const [mobileNewMenuOpen, setMobileNewMenuOpen] = useState(false);
 
   const [isDark, setIsDark] = useState(() => {
     const theme = localStorage.getItem('theme');
@@ -627,6 +630,29 @@ function Dashboard() {
 
       {/* Top Header */}
       <header className="db-header">
+        {mobileSearchOpen && (
+          <div className="db-mobile-search-overlay">
+            <div className="db-mobile-search-wrapper">
+              <svg className="db-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                className="db-mobile-search-input"
+                placeholder="Search everything in your cloud..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+              <button 
+                className="db-mobile-search-close" 
+                onClick={() => { setMobileSearchOpen(false); setSearchQuery(''); }}
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        )}
         <div className="db-header-left">
           <Link to="/dashboard" className="db-logo-wrapper" onClick={() => { setActiveTab('files'); setCurrentFolderId(localStorage.getItem('parentfolderId')); }}>
             <div className="db-logo">
@@ -654,6 +680,15 @@ function Dashboard() {
         </div>
 
         <div className="db-header-right">
+          <button 
+            className="db-icon-btn db-mobile-search-toggle" 
+            title="Search" 
+            onClick={() => setMobileSearchOpen(true)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
           <button className="db-icon-btn" title="Help" onClick={() => setShowHelpModal(true)}>
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </button>
@@ -727,7 +762,7 @@ function Dashboard() {
           {/* Action Toolbar */}
           <div className="db-toolbar">
             <div className="db-toolbar-left">
-              <div className="db-new-dropdown-container">
+              <div className="db-new-dropdown-container db-desktop-only-btn">
                 <button 
                   className="db-btn-primary" 
                   disabled={activeTab !== 'files'}
@@ -759,7 +794,7 @@ function Dashboard() {
                 )}
               </div>
               <button 
-                className="db-btn-secondary" 
+                className="db-btn-secondary db-desktop-only-btn" 
                 disabled={activeTab !== 'files'}
                 onClick={handleUploadClick}
               >
@@ -772,7 +807,7 @@ function Dashboard() {
                 onClick={handleRename}
               >
                 <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                Rename
+                <span>Rename</span>
               </button>
               <button 
                 className="db-btn-secondary" 
@@ -781,7 +816,7 @@ function Dashboard() {
                 style={{ color: '#ef4444' }}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                Delete
+                <span>Delete</span>
               </button>
             </div>
 
@@ -868,6 +903,18 @@ function Dashboard() {
                                 </defs>
                               </svg>
                             </div>
+                            <button 
+                              className="db-folder-more-btn-mobile" 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMobileMenu({ item: folder, type: 'folder' });
+                              }}
+                              title="Folder Actions"
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                              </svg>
+                            </button>
                           </div>
                           <h4 className="db-folder-name" title={folder.folderName}>{folder.folderName}</h4>
                           <span className="db-folder-date">{new Date(folder.modifiedDate).toLocaleDateString()}</span>
@@ -925,6 +972,18 @@ function Dashboard() {
                                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                 </button>
                               </div>
+                              <button 
+                                className="db-file-action-btn db-mobile-more-btn"
+                                title="More actions"
+                                onClick={(e) => { 
+                                  e.stopPropagation(); 
+                                  setActiveMobileMenu({ item: file, type: 'file' }); 
+                                }}
+                              >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                  <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                                </svg>
+                              </button>
                               <span className="db-file-size">{file.fileSize}</span>
                               <span className="db-file-date">{new Date(file.modifiedDate).toLocaleDateString()}</span>
                             </div>
@@ -1036,7 +1095,7 @@ function Dashboard() {
                             {getFileIcon(file.fileName)}
                             <span className="db-file-name">{file.fileName}</span>
                           </div>
-                          <div className="db-file-right">
+                           <div className="db-file-right">
                             <div className="db-file-actions" onClick={(e) => e.stopPropagation()}>
                               <button className="db-file-action-btn" title="Preview" onClick={() => handleViewFile(file)}>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1048,6 +1107,18 @@ function Dashboard() {
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                               </button>
                             </div>
+                            <button 
+                              className="db-file-action-btn db-mobile-more-btn"
+                              title="More actions"
+                              onClick={(e) => { 
+                                e.stopPropagation(); 
+                                setActiveMobileMenu({ item: file, type: 'file' }); 
+                              }}
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                              </svg>
+                            </button>
                             <span className="db-file-size">{file.fileSize}</span>
                             <span className="db-file-date">{new Date(file.modifiedDate).toLocaleDateString()}</span>
                           </div>
@@ -1157,6 +1228,18 @@ function Dashboard() {
                               Delete Permanently
                             </button>
                           </div>
+                          <button 
+                            className="db-file-action-btn db-mobile-more-btn"
+                            title="More actions"
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              setActiveMobileMenu({ item: folder, type: 'trash-folder' }); 
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                            </svg>
+                          </button>
                           <span className="db-file-size">--</span>
                           <span className="db-file-date">{new Date(folder.modifiedDate).toLocaleDateString()}</span>
                         </div>
@@ -1177,6 +1260,18 @@ function Dashboard() {
                               Delete Permanently
                             </button>
                           </div>
+                          <button 
+                            className="db-file-action-btn db-mobile-more-btn"
+                            title="More actions"
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              setActiveMobileMenu({ item: file, type: 'trash-file' }); 
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                            </svg>
+                          </button>
                           <span className="db-file-size">{file.fileSize}</span>
                           <span className="db-file-date">{new Date(file.modifiedDate).toLocaleDateString()}</span>
                         </div>
@@ -1231,10 +1326,28 @@ function Dashboard() {
               <span style={{ color: 'var(--text-h)' }}>Dark Mode</span>
               <input
                 type="checkbox"
+                className="settings-toggle-checkbox"
                 checked={isDark}
                 onChange={(e) => setIsDark(e.target.checked)}
               />
             </label>
+          </div>
+
+          <div className="settings-item db-mobile-only-storage" style={{ marginTop: '24px' }}>
+            <div className="settings-section-title">Storage Space</div>
+            <div className="db-storage-card" style={{ padding: '12px 0 0 0' }}>
+              <div className="db-storage-info">
+                <span>Storage</span>
+                <span>{totalUsedPercent}% used</span>
+              </div>
+              <div className="db-storage-bar-bg">
+                <div className="db-storage-bar-fill" style={{ width: `${totalUsedPercent}%` }}></div>
+              </div>
+              <span style={{ fontSize: '11px', display: 'block', marginTop: '6px', marginBottom: '12px', color: 'var(--text)' }}>
+                {storageUsed} used of 2 GB
+              </span>
+              <button className="db-premium-btn" onClick={() => { setShowSettings(false); navigate('/upgrade'); }}>Upgrade to Pro</button>
+            </div>
           </div>
 
           <div className="settings-item" style={{ marginTop: '32px' }}>
@@ -1390,6 +1503,193 @@ function Dashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="db-mobile-nav">
+        <button 
+          className={`db-mobile-nav-item ${activeTab === 'files' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('files'); setCurrentFolderId(localStorage.getItem('parentfolderId') || ''); }}
+        >
+          <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span className="db-mobile-nav-text">Files</span>
+        </button>
+        <button 
+          className={`db-mobile-nav-item ${activeTab === 'recent' ? 'active' : ''}`}
+          onClick={() => setActiveTab('recent')}
+        >
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span className="db-mobile-nav-text">Recent</span>
+        </button>
+        <button 
+          className={`db-mobile-nav-item ${activeTab === 'trash' ? 'active' : ''}`}
+          onClick={() => setActiveTab('trash')}
+        >
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          <span className="db-mobile-nav-text">Recycle</span>
+        </button>
+      </nav>
+
+      {/* Mobile Floating Action Button (FAB) */}
+      {activeTab === 'files' && (
+        <div className="db-mobile-fab-container">
+          {mobileNewMenuOpen && (
+            <>
+              <div className="db-fab-backdrop" onClick={() => setMobileNewMenuOpen(false)}></div>
+              <div className="db-fab-menu">
+                <button 
+                  className="db-fab-menu-item" 
+                  onClick={() => { setMobileNewMenuOpen(false); setShowCreateFolderModal(true); }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  <span>New Folder</span>
+                </button>
+                <button 
+                  className="db-fab-menu-item" 
+                  onClick={() => { setMobileNewMenuOpen(false); handleUploadClick(); }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <span>Upload File</span>
+                </button>
+              </div>
+            </>
+          )}
+          <button 
+            className={`db-mobile-fab ${mobileNewMenuOpen ? 'open' : ''}`}
+            onClick={() => setMobileNewMenuOpen(!mobileNewMenuOpen)}
+            title="New Item"
+          >
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      )}
+
+      {/* Mobile Bottom Action Sheet */}
+      {activeMobileMenu && (
+        <>
+          <div className="db-mobile-menu-backdrop" onClick={() => setActiveMobileMenu(null)}></div>
+          <div className="db-mobile-menu-sheet">
+            <div className="db-mobile-menu-header">
+              <div className="db-mobile-menu-title-wrapper">
+                {(activeMobileMenu.type === 'file' || activeMobileMenu.type === 'trash-file') ? getFileIcon(activeMobileMenu.item.fileName) : (
+                  <svg className="db-mobile-menu-folder-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                )}
+                <span className="db-mobile-menu-title">
+                  {activeMobileMenu.type.includes('file') ? activeMobileMenu.item.fileName : activeMobileMenu.item.folderName}
+                </span>
+              </div>
+              <button className="db-mobile-menu-close-btn" onClick={() => setActiveMobileMenu(null)}>&times;</button>
+            </div>
+            
+            <div className="db-mobile-menu-body">
+              {activeMobileMenu.type === 'folder' && (
+                <button 
+                  className="db-mobile-menu-action"
+                  onClick={() => { 
+                    setCurrentFolderId(activeMobileMenu.item._id); 
+                    setActiveMobileMenu(null); 
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13l5-5-5-5M23 8H8a4 4 0 0 0-4 4v9"/></svg>
+                  <span>Open Folder</span>
+                </button>
+              )}
+              
+              {activeMobileMenu.type === 'file' && (
+                <>
+                  <button 
+                    className="db-mobile-menu-action"
+                    onClick={() => { 
+                      handleViewFile(activeMobileMenu.item); 
+                      setActiveMobileMenu(null); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Preview</span>
+                  </button>
+                  <button 
+                    className="db-mobile-menu-action"
+                    onClick={() => { 
+                      handleDownloadFile(activeMobileMenu.item._id); 
+                      setActiveMobileMenu(null); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download</span>
+                  </button>
+                  <button 
+                    className="db-mobile-menu-action"
+                    onClick={() => { 
+                      handleShareClick(activeMobileMenu.item); 
+                      setActiveMobileMenu(null); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    <span>Share Link</span>
+                  </button>
+                </>
+              )}
+              
+              {(activeMobileMenu.type === 'file' || activeMobileMenu.type === 'folder') && (
+                <>
+                  <button 
+                    className="db-mobile-menu-action"
+                    onClick={() => { 
+                      setSelectedItem({ 
+                        id: activeMobileMenu.item._id, 
+                        type: activeMobileMenu.type, 
+                        name: activeMobileMenu.type === 'file' ? activeMobileMenu.item.fileName : activeMobileMenu.item.folderName 
+                      }); 
+                      setActiveMobileMenu(null); 
+                      handleRename(); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    <span>Rename</span>
+                  </button>
+                  
+                  <button 
+                    className="db-mobile-menu-action"
+                    style={{ color: '#ef4444' }}
+                    onClick={() => { 
+                      handleDelete(activeMobileMenu.item._id, activeMobileMenu.type); 
+                      setActiveMobileMenu(null); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <span>Delete</span>
+                  </button>
+                </>
+              )}
+
+              {(activeMobileMenu.type === 'trash-file' || activeMobileMenu.type === 'trash-folder') && (
+                <>
+                  <button 
+                    className="db-mobile-menu-action"
+                    onClick={() => { 
+                      handleRestore(activeMobileMenu.item._id, activeMobileMenu.type === 'trash-file' ? 'file' : 'folder'); 
+                      setActiveMobileMenu(null); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    <span>Restore</span>
+                  </button>
+                  <button 
+                    className="db-mobile-menu-action"
+                    style={{ color: '#ef4444' }}
+                    onClick={() => { 
+                      handlePermanentDelete(activeMobileMenu.item._id, activeMobileMenu.type === 'trash-file' ? 'file' : 'folder'); 
+                      setActiveMobileMenu(null); 
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <span>Delete Permanently</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
       )}
 
     </div>

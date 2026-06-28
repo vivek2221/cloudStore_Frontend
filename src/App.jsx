@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
-let Dashboard = lazy(()=>'./pages/Dashboard')
+let Dashboard = lazy(() => import('./pages/Dashboard'));
 import Upgrade from './pages/Upgrade';
 
 function App() {

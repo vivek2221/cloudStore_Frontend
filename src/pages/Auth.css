@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   padding: 16px;
   box-sizing: border-box;
@@ -13,7 +13,6 @@
   transition: background 0.3s ease;
   position: relative;
   overflow: hidden;
-  height: 100vh;
 }
 
 /* Background floating elements for abstract look */
@@ -405,4 +404,14 @@ html.dark .auth-social-btn:hover {
   background-color: rgba(239, 68, 68, 0.15);
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+  .auth-title {
+    font-size: 22px;
+  }
 }
