@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
@@ -45,6 +45,118 @@ function Dashboard() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [activeMobileMenu, setActiveMobileMenu] = useState(null);
   const [mobileNewMenuOpen, setMobileNewMenuOpen] = useState(false);
+
+  // Draggable Mobile FAB State & Handlers
+  const [fabPosition, setFabPosition] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+  const initialPosRef = useRef({ x: 0, y: 0 });
+  const hasDraggedRef = useRef(false);
+  const preventClickRef = useRef(false);
+  const fabContainerRef = useRef(null);
+  const activeListenersRef = useRef(null);
+
+  const handleDragStart = (e) => {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    dragStartRef.current = { x: clientX, y: clientY };
+    
+    if (fabContainerRef.current) {
+      const rect = fabContainerRef.current.getBoundingClientRect();
+      initialPosRef.current = { x: rect.left, y: rect.top };
+    }
+    
+    hasDraggedRef.current = false;
+    
+    if (e.touches) {
+      document.addEventListener('touchmove', handleDragMove, { passive: false });
+      document.addEventListener('touchend', handleDragEnd);
+      activeListenersRef.current = { move: handleDragMove, end: handleDragEnd, isTouch: true };
+    } else {
+      document.addEventListener('mousemove', handleDragMove);
+      document.addEventListener('mouseup', handleDragEnd);
+      activeListenersRef.current = { move: handleDragMove, end: handleDragEnd, isTouch: false };
+    }
+  };
+
+  const handleDragMove = (e) => {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    const dx = clientX - dragStartRef.current.x;
+    const dy = clientY - dragStartRef.current.y;
+    
+    if (!hasDraggedRef.current && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+      hasDraggedRef.current = true;
+      setIsDragging(true);
+      setMobileNewMenuOpen(false);
+    }
+    
+    if (hasDraggedRef.current) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+      
+      let newX = initialPosRef.current.x + dx;
+      let newY = initialPosRef.current.y + dy;
+      
+      const fabWidth = 56;
+      const fabHeight = 56;
+      const padding = 16;
+      
+      const minX = padding;
+      const maxX = window.innerWidth - fabWidth - padding;
+      const minY = padding;
+      const maxY = window.innerHeight - 64 - fabHeight - padding;
+      
+      newX = Math.max(minX, Math.min(maxX, newX));
+      newY = Math.max(minY, Math.min(maxY, newY));
+      
+      setFabPosition({ x: newX, y: newY });
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (activeListenersRef.current) {
+      if (activeListenersRef.current.isTouch) {
+        document.removeEventListener('touchmove', activeListenersRef.current.move);
+        document.removeEventListener('touchend', activeListenersRef.current.end);
+      } else {
+        document.removeEventListener('mousemove', activeListenersRef.current.move);
+        document.removeEventListener('mouseup', activeListenersRef.current.end);
+      }
+      activeListenersRef.current = null;
+    }
+    
+    if (hasDraggedRef.current) {
+      preventClickRef.current = true;
+      setIsDragging(false);
+      setTimeout(() => {
+        preventClickRef.current = false;
+      }, 50);
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setFabPosition(null);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (activeListenersRef.current) {
+        if (activeListenersRef.current.isTouch) {
+          document.removeEventListener('touchmove', activeListenersRef.current.move);
+          document.removeEventListener('touchend', activeListenersRef.current.end);
+        } else {
+          document.removeEventListener('mousemove', activeListenersRef.current.move);
+          document.removeEventListener('mouseup', activeListenersRef.current.end);
+        }
+      }
+    };
+  }, []);
+
 
   const [isDark, setIsDark] = useState(() => {
     const theme = localStorage.getItem('theme');
@@ -1532,11 +1644,27 @@ function Dashboard() {
 
       {/* Mobile Floating Action Button (FAB) */}
       {activeTab === 'files' && (
-        <div className="db-mobile-fab-container">
+        <div 
+          ref={fabContainerRef}
+          className="db-mobile-fab-container"
+          style={fabPosition ? {
+            position: 'fixed',
+            left: `${fabPosition.x}px`,
+            top: `${fabPosition.y}px`,
+            bottom: 'auto',
+            right: 'auto'
+          } : {}}
+        >
           {mobileNewMenuOpen && (
             <>
               <div className="db-fab-backdrop" onClick={() => setMobileNewMenuOpen(false)}></div>
-              <div className="db-fab-menu">
+              <div 
+                className="db-fab-menu"
+                style={fabPosition && fabPosition.x < window.innerWidth / 2 ? {
+                  left: 0,
+                  right: 'auto'
+                } : {}}
+              >
                 <button 
                   className="db-fab-menu-item" 
                   onClick={() => { setMobileNewMenuOpen(false); setShowCreateFolderModal(true); }}
@@ -1548,7 +1676,7 @@ function Dashboard() {
                   className="db-fab-menu-item" 
                   onClick={() => { setMobileNewMenuOpen(false); handleUploadClick(); }}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                   <span>Upload File</span>
                 </button>
               </div>
@@ -1556,7 +1684,16 @@ function Dashboard() {
           )}
           <button 
             className={`db-mobile-fab ${mobileNewMenuOpen ? 'open' : ''}`}
-            onClick={() => setMobileNewMenuOpen(!mobileNewMenuOpen)}
+            onClick={(e) => {
+              if (preventClickRef.current) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+              }
+              setMobileNewMenuOpen(!mobileNewMenuOpen);
+            }}
+            onMouseDown={handleDragStart}
+            onTouchStart={handleDragStart}
             title="New Item"
           >
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

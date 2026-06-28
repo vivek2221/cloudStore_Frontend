@@ -2026,12 +2026,15 @@ html.dark .db-file-row-share-panel {
   background: linear-gradient(135deg, var(--accent) 0%, #3b82f6 100%);
   color: white;
   border: none;
-  cursor: pointer;
+  cursor: grab;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 6px 20px rgba(170, 59, 255, 0.4);
   transition: transform 0.25s ease, box-shadow 0.25s;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .db-mobile-fab svg {
