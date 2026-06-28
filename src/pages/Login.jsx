@@ -7,7 +7,6 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -175,19 +174,7 @@ function Login() {
             {errors.password && <span className="auth-error-text">{errors.password}</span>}
           </div>
 
-          <div className="auth-options">
-            <label className="auth-remember-me">
-              <input
-                type="checkbox"
-                className="auth-checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={loading}
-              />
-              Remember me
-            </label>
-            <a href="#forgot" className="auth-forgot-link">Forgot password?</a>
-          </div>
+
 
           <button
             type="submit"

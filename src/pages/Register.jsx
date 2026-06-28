@@ -9,7 +9,6 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [agreeTerms, setAgreeTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -31,9 +30,6 @@ function Register() {
     }
     if (password !== confirmPassword) {
       tempErrors.confirmPassword = 'Passwords do not match';
-    }
-    if (!agreeTerms) {
-      tempErrors.agreeTerms = 'You must agree to the Terms of Service';
     }
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -184,19 +180,7 @@ function Register() {
             {errors.confirmPassword && <span className="auth-error-text">{errors.confirmPassword}</span>}
           </div>
 
-          <div className="auth-options">
-            <label className="auth-remember-me">
-              <input
-                type="checkbox"
-                className="auth-checkbox"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-                disabled={loading}
-              />
-              I agree to the Terms of Service
-            </label>
-          </div>
-          {errors.agreeTerms && <span className="auth-error-text" style={{ marginTop: '-12px' }}>{errors.agreeTerms}</span>}
+
 
           <button
             type="submit"
