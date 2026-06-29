@@ -187,7 +187,7 @@ function Dashboard() {
   const [user, setUser] = useState(() => {
     return {
       name: localStorage.getItem('name') || 'Sarah Jenkins',
-      email: localStorage.getItem('email') || 'user@aerodrive.com'
+      email: localStorage.getItem('email') || 'user@cloudstore.com'
     };
   });
 
@@ -308,7 +308,7 @@ function Dashboard() {
     {
       id: 'vault',
       title: 'Welcome to Personal Vault',
-      desc: 'Personal Vault is your place within AeroDrive with an extra layer of security. Get started by moving your files here.',
+      desc: 'Personal Vault is your place within cloudStore with an extra layer of security. Get started by moving your files here.',
       actionText: 'Get Started',
       icon: (
         <svg viewBox="0 0 24 24">
@@ -772,7 +772,7 @@ function Dashboard() {
                 <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
               </svg>
             </div>
-            <h1 className="db-title">AeroDrive</h1>
+            <h1 className="db-title">cloudStore</h1>
           </Link>
         </div>
 

@@ -26,7 +26,7 @@ function Upgrade() {
     {
       name: 'Starter',
       price: 0,
-      description: 'Perfect for testing out AeroDrive capabilities',
+      description: 'Perfect for testing out cloudStore capabilities',
       features: [
         '5 GB secure cloud storage',
         'Standard Personal Vault (max 3 files)',
@@ -158,7 +158,7 @@ function Upgrade() {
                 disabled={plan.isCurrent}
                 onClick={() => {
                   if (!plan.isCurrent) {
-                    alert(`Purchase flow initiated for AeroDrive ${plan.name} (${billingCycle})!`);
+                    alert(`Purchase flow initiated for cloudStore ${plan.name} (${billingCycle})!`);
                   }
                 }}
               >
@@ -177,7 +177,7 @@ function Upgrade() {
             </div>
             <div className="faq-card">
               <h4>What is the Personal Vault?</h4>
-              <p>Personal Vault is a secured directory within AeroDrive requiring two-step verification (PIN, biometrics, or authentication codes) to unlock. Perfect for sensitive documents.</p>
+              <p>Personal Vault is a secured directory within cloudStore requiring two-step verification (PIN, biometrics, or authentication codes) to unlock. Perfect for sensitive documents.</p>
             </div>
             <div className="faq-card">
               <h4>What happens to my files if I downgrade?</h4>
@@ -185,7 +185,7 @@ function Upgrade() {
             </div>
             <div className="faq-card">
               <h4>Are my files encrypted?</h4>
-              <p>Yes, all files stored on AeroDrive are encrypted in transit and at rest. Business Max users get full zero-knowledge local client-side encryption.</p>
+              <p>Yes, all files stored on cloudStore are encrypted in transit and at rest. Business Max users get full zero-knowledge local client-side encryption.</p>
             </div>
           </div>
         </section>
