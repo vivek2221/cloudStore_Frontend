@@ -187,7 +187,7 @@ function Login() {
 
         <div className="auth-divider">or continue with</div>
 
-        <div className="auth-social-buttons" style={{ display: 'flex', justifyContent: 'center', width: '100%',backgroundColor:'transparent' }}>
+        <div className="auth-social-buttons" >
           <GoogleAuth onError={(msg) => setErrors(prev => ({ ...prev, submit: msg }))} />
         </div>
 
