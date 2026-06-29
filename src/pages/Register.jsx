@@ -193,7 +193,7 @@ function Register() {
 
         <div className="auth-divider">or sign up with</div>
 
-        <div className="auth-social-buttons" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <div className="auth-social-buttons" style={{ display: 'flex', justifyContent: 'center', width: '100%' ,backgroundColor:'transparent'}}>
           <GoogleAuth onError={(msg) => setErrors(prev => ({ ...prev, submit: msg }))} />
         </div>
 
