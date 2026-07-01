@@ -47,7 +47,6 @@ function GoogleAuth({ onError }) {
         }
       }}
       text="continue_with"
-      useOneTap
     />
   );
 }
